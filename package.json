@@ -1,0 +1,28 @@
+{
+  "name": "web3hack",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000W\u0000e\u0000b\u00003\u0000 \u0000I\u0000n\u0000s\u0000u\u0000r\u0000a\u0000n\u0000c\u0000e\u0000 \u0000D\u0000A\u0000p\u0000p\u0000 \u0000(\u0000I\u0000d\u0000e\u0000a\u0000 \u0000c\u0000o\u0000m\u0000i\u0000n\u0000g\u0000 \u0000s\u0000o\u0000o\u0000n\u0000)\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adt2936/web3hack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adt2936/web3hack/issues"
+  },
+  "homepage": "https://github.com/adt2936/web3hack#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.0.0",
+    "hardhat": "^2.25.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.3.0",
+    "dotenv": "^17.0.1"
+  }
+}
