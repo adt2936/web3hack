@@ -24,7 +24,7 @@ contract NarcChain is AccessControl {
 
     function flagWallet(address wallet, string memory reason) public onlyRole(POLICE_ROLE) {
         require(flaggedWallets[wallet].timestamp == 0, "Wallet already flagged");
-        uint riskScore = 75; // Later this can be dynamic or AI-analyzed
+        uint riskScore = 75;
         flaggedWallets[wallet] = Flag(reason, riskScore, block.timestamp);
         flaggedAddresses.push(wallet);
         emit WalletFlagged(wallet, reason, riskScore);
