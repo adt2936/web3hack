@@ -1,40 +1,64 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
+contract NarcChain {
+    uint256 public constant RISK_THRESHOLD = 3; // Number of reports needed to mark as risky
 
-contract NarcChain is AccessControl {
-    bytes32 public constant POLICE_ROLE = keccak256("POLICE_ROLE");
-
-    struct Flag {
-        string reason;
-        uint riskScore;
-        uint timestamp;
+    struct Report {
+        uint256 reportCount;
+        string[] reasons;
+        mapping(address => bool) hasReported;
+        bool isRisky;
     }
 
-    mapping(address => Flag) public flaggedWallets;
-    address[] public flaggedAddresses;
+    mapping(address => Report) private reportedWallets;
+    address[] public allReportedWallets;
 
-    event WalletFlagged(address indexed wallet, string reason, uint riskScore);
+    event WalletReported(address indexed wallet, address indexed reporter, string reason);
+    event WalletMarkedRisky(address indexed wallet);
 
-    constructor() {
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _grantRole(POLICE_ROLE, msg.sender);
+    modifier notSelfReport(address wallet) {
+        require(msg.sender != wallet, "Cannot report your own wallet.");
+        _;
     }
 
-    function flagWallet(address wallet, string memory reason) public onlyRole(POLICE_ROLE) {
-        require(flaggedWallets[wallet].timestamp == 0, "Wallet already flagged");
-        uint riskScore = 75;
-        flaggedWallets[wallet] = Flag(reason, riskScore, block.timestamp);
-        flaggedAddresses.push(wallet);
-        emit WalletFlagged(wallet, reason, riskScore);
+    function reportWallet(address wallet, string calldata reason)
+        external
+        notSelfReport(wallet)
+    {
+        Report storage r = reportedWallets[wallet];
+
+        require(!r.hasReported[msg.sender], "You have already reported this wallet.");
+        r.hasReported[msg.sender] = true;
+        r.reportCount++;
+        r.reasons.push(reason);
+
+        if (r.reportCount == 1) {
+            allReportedWallets.push(wallet);
+        }
+
+        emit WalletReported(wallet, msg.sender, reason);
+
+        if (r.reportCount >= RISK_THRESHOLD && !r.isRisky) {
+            r.isRisky = true;
+            emit WalletMarkedRisky(wallet);
+        }
     }
 
-    function getFlag(address wallet) public view returns (Flag memory) {
-        return flaggedWallets[wallet];
+    function getWalletStatus(address wallet)
+        external
+        view
+        returns (uint256 reportCount, bool isRisky, string[] memory reasons)
+    {
+        Report storage r = reportedWallets[wallet];
+        return (r.reportCount, r.isRisky, r.reasons);
     }
 
-    function getAllFlaggedWallets() public view returns (address[] memory) {
-        return flaggedAddresses;
+    function getAllReportedWallets() external view returns (address[] memory) {
+        return allReportedWallets;
+    }
+
+    function hasUserReported(address wallet, address user) external view returns (bool) {
+        return reportedWallets[wallet].hasReported[user];
     }
 }
