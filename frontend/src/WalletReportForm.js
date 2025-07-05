@@ -1,60 +1,49 @@
 import React, { useState } from 'react';
 import { getContract } from './contract';
+import { toast } from 'react-toastify';
 
 export default function WalletReportForm() {
   const [wallet, setWallet] = useState('');
   const [reason, setReason] = useState('');
-  const [status, setStatus] = useState('');
 
   const handleReport = async () => {
     if (!wallet || !reason) {
-      setStatus("Please enter both the wallet address and a reason for reporting.");
+      toast.error("Please enter both the wallet address and a reason.");
       return;
     }
-
-    setStatus("Submitting your report...");
 
     try {
       const contract = await getContract();
       const tx = await contract.reportWallet(wallet.trim(), reason.trim());
       await tx.wait();
-      setStatus("Wallet reported successfully.");
+      toast.success("Wallet reported successfully.");
     } catch (err) {
       console.error(err);
-      let message = "An unexpected error occurred.";
+      let message = "An error occurred.";
 
-      if (err?.reason) {
-        message = err.reason;
-      } else if (err?.error?.message) {
-        message = err.error.message;
-      } else if (err?.message?.includes("user rejected")) {
-        message = "Transaction was rejected.";
-      }
+      if (err?.reason) message = err.reason;
+      else if (err?.error?.message) message = err.error.message;
+      else if (err?.message?.includes("user rejected")) message = "Transaction was rejected.";
 
-      setStatus(message);
+      toast.error(message);
     }
   };
 
   return (
-    <div style={{ marginBottom: '2rem' }}>
+    <div>
       <h3>Report a Suspicious Wallet</h3>
       <input
         value={wallet}
         onChange={e => setWallet(e.target.value)}
-        placeholder="Wallet address (0x...)"
-        style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
+        placeholder="Wallet address"
       />
       <textarea
         value={reason}
         onChange={e => setReason(e.target.value)}
         placeholder="Reason for reporting"
         rows={4}
-        style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
       />
-      <button onClick={handleReport} style={{ padding: '0.5rem 1rem' }}>
-        Submit Report
-      </button>
-      {status && <p style={{ marginTop: '1rem' }}>{status}</p>}
+      <button onClick={handleReport}>Submit Report</button>
     </div>
   );
 }

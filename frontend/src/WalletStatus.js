@@ -1,35 +1,67 @@
 import React, { useState } from 'react';
 import { getContract } from './contract';
+import { toast } from 'react-toastify';
 
 export default function WalletStatus() {
   const [wallet, setWallet] = useState('');
-  const [data, setData] = useState(null);
+  const [reportData, setReportData] = useState(null);
 
-  const fetchStatus = async () => {
+  const handleCheck = async () => {
+    if (!wallet) {
+      toast.error("Please enter a wallet address.");
+      return;
+    }
+
     try {
       const contract = await getContract();
-      const res = await contract.getWalletStatus(wallet);
-      setData(res);
+      const [count, isRisky, reasons] = await contract.getWalletStatus(wallet.trim());
+
+      setReportData({
+        count: Number(count), // FIXED HERE
+        isRisky,
+        reasons,
+      });
     } catch (err) {
-      setData({ error: err.message });
+      console.error(err);
+      toast.error("Failed to fetch wallet status.");
     }
   };
 
-  return (
-    <div>
-      <h3>Check Wallet Risk</h3>
-      <input value={wallet} onChange={e => setWallet(e.target.value)} placeholder="Wallet address" />
-      <button onClick={fetchStatus}>Check</button>
+  const getRiskLabel = (count, isRisky) => {
+    if (count === 0) return { label: "No Risk", color: "green" };
+    if (isRisky) return { label: "High Risk", color: "red" };
+    return { label: "Mild Risk", color: "orange" };
+  };
 
-      {data && !data.error && (
-        <div>
-          <p>Reports: {data[0].toString()}</p>
-          <p>Risky: {data[1] ? 'Yes 🚨' : 'No ✅'}</p>
-          <p>Reasons:</p>
-          <ul>{data[2].map((r, i) => <li key={i}>{r}</li>)}</ul>
+  return (
+    <div className="status-check-container">
+      <h3>Check Wallet Risk</h3>
+      <input
+        type="text"
+        value={wallet}
+        onChange={e => setWallet(e.target.value)}
+        placeholder="Enter wallet address"
+      />
+      <button onClick={handleCheck}>Check</button>
+
+      {reportData && (
+        <div style={{ marginTop: '20px' }}>
+          <p><strong>Reports:</strong> {reportData.count}</p>
+          <p style={{ color: getRiskLabel(reportData.count, reportData.isRisky).color }}>
+            <strong>Status:</strong> {getRiskLabel(reportData.count, reportData.isRisky).label}
+          </p>
+          {reportData.reasons.length > 0 && (
+            <>
+              <strong>Reasons:</strong>
+              <ul>
+                {reportData.reasons.map((reason, idx) => (
+                  <li key={idx}>{reason}</li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       )}
-      {data?.error && <p>Error: {data.error}</p>}
     </div>
   );
 }

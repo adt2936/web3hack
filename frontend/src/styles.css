@@ -1,0 +1,148 @@
+body {
+  background-color: #0d1117;
+  color: #c9d1d9;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 24px;
+  border-radius: 12px;
+  background-color: #161b22;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  background-color: #0d1117;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+  border-color: #58a6ff;
+  outline: none;
+}
+
+button {
+  background-color: #238636;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2ea043;
+}
+
+.status-message {
+  margin-top: 16px;
+  font-weight: 500;
+  color: #8b949e;
+}
+
+.button {
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #1f6feb;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.button:hover {
+  background-color: #1158c7;
+}
+
+.button-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.page-container {
+  padding: 40px;
+  color: #c9d1d9;
+  background-color: #0d1117;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+}
+
+.navbar {
+  background-color: #161b22;
+  padding: 16px;
+  border-bottom: 1px solid #30363d;
+  display: flex;
+  gap: 20px;
+  font-size: 16px;
+}
+
+.navbar a {
+  color: #c9d1d9;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navbar a:hover {
+  color: #58a6ff;
+}
+
+.page-container {
+  padding: 60px;
+  color: #c9d1d9;
+  background-color: #0d1117;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+}
+
+.home-title {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #58a6ff;
+}
+
+.home-subtitle {
+  font-size: 20px;
+  color: #8b949e;
+  margin-bottom: 40px;
+}
+
+.home-description {
+  font-size: 18px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+  line-height: 1.6;
+}
+
+.home-description ul {
+  list-style-type: disc;
+  margin-left: 25px;
+  margin-top: 10px;
+}
+
